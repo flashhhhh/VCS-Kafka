@@ -1,0 +1,17 @@
+services:
+  api_service:
+    build:
+      context: ../..
+      dockerfile: deployments/docker/Dockerfile
+    ports:
+      - "1906:1906"
+    logging:
+      driver: journald
+      options:
+          tag: mytag
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
