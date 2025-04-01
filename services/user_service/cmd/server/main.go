@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 	"user_service/infrastructure/grpc"
-	db "user_service/infrastructure/postgres"
+	database "user_service/infrastructure/postgres"
 	"user_service/infrastructure/redis"
 	"user_service/internal/handler"
 	"user_service/internal/repository"
@@ -26,19 +26,24 @@ func main() {
 	}
 
 	// Load environment variables from the specified file
-	envFile := "user." + environment + ".env"
+	envFile := "config/user." + environment + ".env"
 	env.LoadEnv(envFile)
 	log.Println("Environment variables loaded from file:", envFile)
 
 	// Connect to the database
 	log.Println("Connecting to the database...")
 	dsn := "host=" + env.GetEnv("USER_DB_HOST", "localhost") + " user=" + env.GetEnv("USER_DB_USER", "root") + " password=" + env.GetEnv("USER_DB_PASSWORD", "") + " dbname=" + env.GetEnv("USER_DB_NAME", "user_service") + " port=" + env.GetEnv("USER_DB_PORT", "5432") + " sslmode=disable"
-	db, err := db.ConnectDB(dsn)
+	db, err := database.ConnectDB(dsn)
 	if err != nil {
 		panic("Failed to connect to the database: " + err.Error())
 	}
 
 	// Migrate the database
+	log.Println("Migrating the database...")
+	err = database.MigrateDB(db)
+	if err != nil {
+		panic("Failed to migrate the database: " + err.Error())
+	}
 	
 	// Connect to Redis
 	log.Println("Connecting to Redis...")
@@ -51,6 +56,6 @@ func main() {
 	userHandler := handler.NewUserHandler(userService)
 
 	// Start the gRPC server
-	log.Println("Starting gRPC server at port", env.GetEnv("USER_SERVER_PORT", ":50051"))
-	grpc.StartGRPCServer(userHandler, env.GetEnv("USER_SERVER_PORT", ":50051"))
+	log.Println("Starting gRPC server at port", env.GetEnv("USER_SERVER_PORT", "50051"))
+	grpc.StartGRPCServer(userHandler, env.GetEnv("USER_SERVER_PORT", "50051"))
 }

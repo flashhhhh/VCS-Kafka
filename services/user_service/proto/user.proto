@@ -6,9 +6,9 @@ option go_package = "./pb";
 
 service UserService {
     rpc CreateUser (CreateUserRequest) returns (EmptyResponse);
-    // rpc Login (LoginRequest) returns (LoginResponse);
-    // rpc GetUserByID (GetUserByIDRequest) returns (UserResponse);
-    // rpc GetAllUsers (EmptyRequest) returns (UsersResponse);
+    rpc Login (LoginRequest) returns (LoginResponse);
+    rpc GetUserByID (GetUserByIDRequest) returns (UserResponse);
+    rpc GetAllUsers (EmptyRequest) returns (UsersResponse);
 }
 
 message CreateUserRequest {

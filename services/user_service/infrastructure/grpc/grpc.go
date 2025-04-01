@@ -10,7 +10,7 @@ import (
 )
 
 func StartGRPCServer(userHandler *handler.UserHandler, port string) {
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", ":" + port)
 	if err != nil {
 		panic(err)
 	}
@@ -19,7 +19,7 @@ func StartGRPCServer(userHandler *handler.UserHandler, port string) {
 	grpcServer := grpc.NewServer()
 	pb.RegisterUserServiceServer(grpcServer, userHandler)
 
-	log.Println("gRPC server is running on port :50051")
+	log.Println("gRPC server is running on port: ", port)
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
