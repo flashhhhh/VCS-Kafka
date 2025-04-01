@@ -3,22 +3,22 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	"gateway/internal/client"
+	client "gateway/infrastructure/grpc"
 	"net/http"
 	"strconv"
 )
 
-type GatewayHandler struct {
+type UserHandler struct {
 	UserClient client.UserClient
 }
 
-func NewGatewayHandler(userClient client.UserClient) *GatewayHandler {
-	return &GatewayHandler{
+func NewUserHandler(userClient client.UserClient) *UserHandler {
+	return &UserHandler{
 		UserClient: userClient,
 	}
 }
 
-func (h *GatewayHandler) CreateUserHandler(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) CreateUserHandler(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	name := r.FormValue("name")
@@ -33,7 +33,7 @@ func (h *GatewayHandler) CreateUserHandler(w http.ResponseWriter, r *http.Reques
 	w.Write([]byte("User created successfully"))
 }
 
-func (h *GatewayHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
@@ -55,7 +55,7 @@ func (h *GatewayHandler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprintf(`{"token": "%s"}`, resp.Token)))
 }
 
-func (h *GatewayHandler) GetUserByIdHandler(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) GetUserByIdHandler(w http.ResponseWriter, r *http.Request) {
 	idStr := r.FormValue("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
@@ -80,7 +80,7 @@ func (h *GatewayHandler) GetUserByIdHandler(w http.ResponseWriter, r *http.Reque
 	json.NewEncoder(w).Encode(data)
 }
 
-func (h *GatewayHandler) GetAllUsersHandler(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) GetAllUsersHandler(w http.ResponseWriter, r *http.Request) {
 	resp, err := h.UserClient.GetAllUsers()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

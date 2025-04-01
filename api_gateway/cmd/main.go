@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"gateway/api"
-	"gateway/internal/client"
+	client "gateway/infrastructure/grpc"
+	"gateway/infrastructure/kafka"
 	"gateway/internal/handler"
+	"gateway/internal/service"
 	"log"
 	"net/http"
 	"os"
@@ -100,18 +102,24 @@ func main() {
 	log.Println("User service address:", userServiceAddress)
 	serverPort := env.GetEnv("GATEWAY_PORT", "1906")
 
-	// Create a new user client and handler
+	// Create userHandler
 	userClient := client.NewUserClient(userServiceAddress)
-	gatewayHandler := handler.NewGatewayHandler(userClient)
+	userHandler := handler.NewUserHandler(userClient)
+
+	// Create orderHandler
+	brokers := []string{env.GetEnv("KAFKA_HOST", "localhost") + ":" + env.GetEnv("KAFKA_PORT", "9092")}
+	topic := "order_topic"
+	kafkaProducer, _ := kafka.NewKafkaProducer(brokers)
+	orderService := service.NewOrderService(*kafkaProducer, topic)
+	orderHandler := handler.NewOrderHandler(orderService)
 
 	// Start the HTTP server
 	r := mux.NewRouter()
-	api.RegisterRoutes(r, gatewayHandler)
-	// api.RegisterProtectedRoutes(r, gatewayHandler)
+	api.RegisterRoutes(r, userHandler)
 
-	protectedRoute := r.PathPrefix("/protected").Subrouter()
+	protectedRoute := r.PathPrefix("/order").Subrouter()
 	protectedRoute.Use(middleware)
-	api.RegisterProtectedRoutes(protectedRoute, gatewayHandler)
+	api.RegisterProtectedRoutes(protectedRoute, orderHandler)
 
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"}, // Allow all origins, change this for security
