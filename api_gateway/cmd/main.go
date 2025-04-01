@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"gateway/api"
-	client "gateway/infrastructure/grpc"
-	"gateway/infrastructure/kafka"
+
+	"gateway/internal/client"
 	"gateway/internal/handler"
 	"gateway/internal/service"
 	"log"
@@ -16,6 +16,7 @@ import (
 
 	"github.com/flashhhhh/pkg/env"
 	"github.com/flashhhhh/pkg/jwt"
+	"github.com/flashhhhh/pkg/kafka"
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
 )

@@ -9,8 +9,8 @@ github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 h1:Oy0F4A
 github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3/go.mod h1:YvSRo5mw33fLEx1+DlK6L2VV43tJt5Eyel9n9XBcR+0=
 github.com/eapache/queue v1.1.0 h1:YOEu7KNc61ntiQlcEeUIoDTJ2o8mQznoNvUhiigpIqc=
 github.com/eapache/queue v1.1.0/go.mod h1:6eCeP0CKFpHLu8blIFXhExK/dRa7WDZfr6jVFPTqq+I=
-github.com/flashhhhh/pkg v0.0.2 h1:xumSm25JGcFvIwb074bMgg6LuZlh0yvttNOGQTuQjVU=
-github.com/flashhhhh/pkg v0.0.2/go.mod h1:sph5MdWwyxXGeQUVm4E5j4NQQFnehPI8B0iVWlJD3VU=
+github.com/flashhhhh/pkg v0.0.3 h1:fDIs6wXSC729akubhEApgZZg1Rr77TJ0Nq4ZG2khZro=
+github.com/flashhhhh/pkg v0.0.3/go.mod h1:JlNpOOLWurYD/s/NJn/7pLxfyp6izt7zrXRR4u2nrg4=
 github.com/fortytw2/leaktest v1.3.0 h1:u8491cBMTQ8ft8aeV+adlcytMZylmA5nnwwkRZjI8vw=
 github.com/fortytw2/leaktest v1.3.0/go.mod h1:jDsjWgpAGjm2CA7WthBh/CdZYEPF31XHquHwclZch5g=
 github.com/go-logr/logr v1.4.2 h1:6pFjapn8bFcIbiKo3XT4j/BhANplGihG6tvd+8rYgrY=

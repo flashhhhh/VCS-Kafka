@@ -2,7 +2,8 @@ package service
 
 import (
 	"encoding/json"
-	"gateway/infrastructure/kafka"
+
+	"github.com/flashhhhh/pkg/kafka"
 )
 
 type OrderService struct {

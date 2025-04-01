@@ -3,7 +3,7 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	client "gateway/infrastructure/grpc"
+	"gateway/internal/client"
 	"net/http"
 	"strconv"
 )
