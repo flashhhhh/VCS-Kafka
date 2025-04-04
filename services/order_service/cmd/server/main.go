@@ -107,6 +107,8 @@ func main() {
 			log.Printf("Order created successfully for user ID: %d", orderID)
 
 			// Send the order details to api_gateway_topic
+			orderDetails["orderID"] = orderData["orderID"]
+
 			orderDetailsJSON, err := json.Marshal(orderDetails)
 			if err != nil {
 				log.Printf("Failed to marshal order details: %v", err)
