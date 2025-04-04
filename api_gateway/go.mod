@@ -3,7 +3,9 @@ module gateway
 go 1.24.1
 
 require (
+	github.com/IBM/sarama v1.45.1
 	github.com/flashhhhh/pkg v0.0.3
+	github.com/google/uuid v1.6.0
 	github.com/gorilla/mux v1.8.1
 	github.com/rs/cors v1.11.1
 	google.golang.org/grpc v1.71.0
@@ -11,7 +13,6 @@ require (
 )
 
 require (
-	github.com/IBM/sarama v1.45.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eapache/go-resiliency v1.7.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 // indirect

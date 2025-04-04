@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"gateway/api"
 
@@ -14,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/IBM/sarama"
 	"github.com/flashhhhh/pkg/env"
 	"github.com/flashhhhh/pkg/jwt"
 	"github.com/flashhhhh/pkg/kafka"
@@ -128,6 +130,36 @@ func main() {
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
 		AllowCredentials: true,
 	}).Handler(r)
+
+	// Consume the Kafka topic
+	go func() {
+		kafkaConsumer, err := kafka.NewKafkaConsumer(brokers)
+		if err != nil {
+			log.Fatal("Failed to create Kafka consumer:", err)
+		}
+		defer kafkaConsumer.Close()
+
+		log.Println("Starting Kafka consumer...")
+
+		for {
+			partitionConsumer, err := kafkaConsumer.ConsumePartition("api_gateway_topic", 0, sarama.OffsetNewest)
+			if err != nil {
+				log.Fatal("Failed to consume partition:", err)
+			}
+
+			for message := range partitionConsumer.Messages() {
+				log.Println("Received message:", string(message.Value))
+
+				var orderData map[string]any
+				if err := json.Unmarshal(message.Value, &orderData); err != nil {
+					log.Println("Failed to unmarshal message value:", err)
+					continue
+				}
+				
+				orderService.UpdateOrder(orderData)
+			}
+		}
+	}()
 
 	log.Println("Starting server on port", serverPort)
 	log.Fatal(http.ListenAndServe(":"+serverPort, checkCORS(corsHandler)))
