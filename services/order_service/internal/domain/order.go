@@ -1,8 +1,8 @@
 package domain
 
 type Order struct {
-	ID	 int
-	UserID int
-	ProductID int
-	Quantity int
+	ID	 int		`gorm:"primaryKey"`
+	UserID int		`gorm:"primaryKey"`
+	ProductID int	`gorm:"primaryKey"`
+	Quantity int	`gorm:"not null"`
 }
