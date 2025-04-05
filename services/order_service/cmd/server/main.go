@@ -52,6 +52,8 @@ func main() {
 
 	// Kafka
 	brokers := []string{env.GetEnv("KAFKA_HOST", "localhost") + ":" + env.GetEnv("KAFKA_PORT", "9092")}
+	log.Printf("Kafka brokers: %v", brokers)
+	
 	topic := "order_topic"
 	kafkaConsumer, err := kafka.NewKafkaConsumer(brokers)
 	if err != nil {
