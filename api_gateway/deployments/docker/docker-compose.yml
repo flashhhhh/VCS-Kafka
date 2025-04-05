@@ -5,13 +5,22 @@ services:
       dockerfile: deployments/docker/Dockerfile
     ports:
       - "1906:1906"
-    logging:
-      driver: journald
-      options:
-          tag: mytag
+    # logging:
+    #   driver: journald
+    #   options:
+    #       tag: mytag
     networks:
-      - my_network
+      - user_network
+      - order_network
+      - shared_kafka_network
 
 networks:
-  my_network:
-    driver: bridge
+  user_network:
+    external: true
+    name: user_network
+  order_network:
+    external: true
+    name: order_network
+  shared_kafka_network:
+    external: true
+    name: shared_kafka_network
