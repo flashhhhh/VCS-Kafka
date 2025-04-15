@@ -169,7 +169,27 @@ Ta có thể truyền hàm do ta tự viết tùy thuộc vào ngữ cảnh.
 Kafka sử dụng offset để theo dõi tin nhắn từ lúc bắt đầu ghi đến khi xử lý hết các tin nhắn, giúp cho các consumer có thể lấy đúng tin nhắn theo đúng thứ tự được producer gửi.
 
 Trong khi tin nhắn nào cũng có offset, Kafka lưu một vài offset đặc biệt:
-* **Log-end-offset**: Tin nhắn cuối cùng xuất hiện trong 1 partition.
+* **Log-end offset**: Tin nhắn cuối cùng xuất hiện trong 1 partition.
 * **High watermark offset**: Vị trí cuối cùng mà các tin nhắn đã được đồng bộ thành công đến các replica.
 * **Committed offset**: Tin nhắn cuối cùng được 1 consumer xử lý thành công.
 
+Kafka có thể dùng offsets cho nhiều mục đích khác nhau.
+#### Quản lý replication của từng partition
+Khi tin nhắn gửi đến topic, nó sẽ được nhân bản ra các partition khác. Khi consumer fetch tin nhắn, nó sẽ chỉ quan tâm đến các tin nhắn trước **high watermark offset**, tức là các tin nhắn đã được đồng bộ thành công đến toàn bộ replica.
+#### Quản lý lỗi của consumer
+Offset giúp consumer bị lỗi và khởi động lại có thể biết tin nhắn tiếp theo phải xử lý. Có thể tắt auto commit, có nghĩa là chỉ khi consumer commit là dã xử lý thành công thì Kafka mới tăng offset.
+#### Đảm bảo chuyển phát tin nhắn với Kafka offset
+Kafka hỗ trợ 3 mức độ tin cậy.
+##### At Most Once
+Consumer sẽ auto commit tin nhắn ngay khi nó nhận được tin nhắn, trước khi xử lý tin nhắn đó.
+Do đó, nếu tin nhắn bị xử lý lỗi, tin nhắn đó sẽ bị mất. Tuy nhiên, điều này đảm bảo mỗi tin nhắn chỉ được gửi đi đúng một lần duy nhất.
+##### At Least Once
+Consumer chỉ commit nhận được tin nhắn sau khi xử lý xong tin nhắn đó. Nếu như consumer xử lý tin nhắn thành công nhưng gửi yêu cầu commit bị lỗi, Kafka sẽ gửi lại tin nhắn đó đến consumer.
+Do đó, tin nhắn có thể bị gửi lặp lại, nhưng đảm bảo được không bị mất tin nhắn nào.
+##### Exactly Once
+Kafka sẽ tạo 1 transaction gồm việc xử lý tin nhắn và việc gửi commit. Khi bị lỗi ở bước nào, Kafka sẽ thực hiện lại từ đầu.
+Do đó, đảm bảo được mỗi 1 tin nhắn sẽ được xử lý đúng 1 lần và không bị mất tin nhắn. Tuy nhiên, điều này ảnh hưởng đến hiệu năng và phức tạp trong việc triển khai.
+#### Giám sát consumer lag
+Consumer lag là khoảng cách giữa **committed_offset** và **log-end offset**. Nếu lag này quá lớn có thể phá vỡ hệ thống. Điều này thường xảy ra khi:
+* Phân chia không đồng đều các partitions cho các consumers trong 1 group.
+* Tốc độ gửi của producer nhanh hơn nhiều so với tốc độ xử lý của consumer.
