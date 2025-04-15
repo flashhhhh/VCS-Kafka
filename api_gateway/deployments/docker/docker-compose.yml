@@ -1,0 +1,26 @@
+services:
+  api_service:
+    build:
+      context: ../..
+      dockerfile: deployments/docker/Dockerfile
+    ports:
+      - "1906:1906"
+    # logging:
+    #   driver: journald
+    #   options:
+    #       tag: mytag
+    networks:
+      - user_network
+      - order_network
+      - shared_kafka_network
+
+networks:
+  user_network:
+    external: true
+    name: user_network
+  order_network:
+    external: true
+    name: order_network
+  shared_kafka_network:
+    external: true
+    name: shared_kafka_network

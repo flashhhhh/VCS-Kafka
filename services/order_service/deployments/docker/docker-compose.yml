@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: order_db
+    networks:
+      - order_network
+  
+  order_service:
+    build:
+      context: ../..
+      dockerfile: deployments/docker/Dockerfile
+    # logging:
+    #     driver: journald
+    #     options:
+    #         tag: mytag
+    depends_on:
+      - postgres
+    networks:
+      - order_network
+      - shared_kafka_network
+
+networks:
+  order_network:
+    driver: bridge
+    name: order_network
+  shared_kafka_network:
+    external: true
+    name: shared_kafka_network
