@@ -1,8 +1,7 @@
-FROM ubuntu:latest
+FROM golang:alpine
 
-# install and update ca-certificates
-RUN apt-get update && \
-    apt-get install -y golang ca-certificates && \
+# Install necessary dependencies
+RUN apk add --no-cache ca-certificates git && \
     update-ca-certificates
 
 WORKDIR /app

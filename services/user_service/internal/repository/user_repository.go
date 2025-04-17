@@ -31,7 +31,23 @@ func NewUserRepository(db *gorm.DB, redis *redis.Client) UserRepository {
 
 func (r *userRepository) CreateUser(ctx context.Context, user *domain.User) error {
 	err := r.db.Create(user).Error
-	return err
+
+	if err != nil {
+		return err
+	}
+
+	// Cache the user in Redis
+	userData, err := json.Marshal(user)
+	if err != nil {
+		return err
+	}
+
+	err = r.redis.Set(ctx, "user:"+strconv.Itoa(user.ID), userData, 0).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *userRepository) Login(ctx context.Context, username string) (*domain.User, error) {
