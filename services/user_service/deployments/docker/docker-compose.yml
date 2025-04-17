@@ -20,15 +20,29 @@ services:
       context: ../..
       dockerfile: deployments/docker/Dockerfile
     container_name: user_service
-    ports:
-      - "8001:8001"
-    # logging:
-    #     driver: journald
-    #     options:
-    #         tag: mytag
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.user_service.rule=Host(`user.localhost`)"
+      - "traefik.http.routers.user_service.entrypoints=web"
+
     depends_on:
       - postgres
       - redis
+    networks:
+      - user_network
+  
+  traefik:
+    image: traefik:v2.10
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"      # For external HTTP access
+      - "8080:8080"  # Traefik Dashboard
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks:
       - user_network
 

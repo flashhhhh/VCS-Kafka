@@ -10,4 +10,6 @@ COPY . .
 
 RUN go mod tidy
 
+EXPOSE 80
+
 CMD ["sh", "-c", "go run cmd/server/rest/main.go deployment & go run cmd/server/grpc/main.go deployment"]
