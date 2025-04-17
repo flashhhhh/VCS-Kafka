@@ -6,7 +6,7 @@ import (
 	"user_service/infrastructure/grpc"
 	database "user_service/infrastructure/postgres"
 	"user_service/infrastructure/redis"
-	"user_service/internal/handler"
+	grpc_handler "user_service/internal/handler/grpc"
 	"user_service/internal/repository"
 	"user_service/internal/service"
 
@@ -53,9 +53,9 @@ func main() {
 	// Initialize the repository, service, and handler
 	userRepo := repository.NewUserRepository(db, redisClient)
 	userService := service.NewUserService(userRepo)
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := grpc_handler.NewUserHandler(userService)
 
 	// Start the gRPC server
-	log.Println("Starting gRPC server at port", env.GetEnv("USER_SERVER_PORT", "50051"))
-	grpc.StartGRPCServer(userHandler, env.GetEnv("USER_SERVER_PORT", "50051"))
+	log.Println("Starting gRPC server at port", env.GetEnv("GRPC_USER_SERVER_PORT", "50051"))
+	grpc.StartGRPCServer(userHandler, env.GetEnv("GRPC_USER_SERVER_PORT", "50051"))
 }

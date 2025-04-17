@@ -10,4 +10,4 @@ COPY . .
 
 RUN go mod tidy
 
-CMD ["go", "run", "cmd/server/main.go", "deployment"]
+CMD ["sh", "-c", "go run cmd/server/rest/main.go deployment & go run cmd/server/grpc/main.go deployment"]

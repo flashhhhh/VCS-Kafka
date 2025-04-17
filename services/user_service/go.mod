@@ -4,7 +4,9 @@ go 1.24.1
 
 require (
 	github.com/flashhhhh/pkg v0.0.2
+	github.com/gorilla/mux v1.8.1
 	github.com/redis/go-redis/v9 v9.7.3
+	github.com/rs/cors v1.11.1
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.4
 	gorm.io/driver/postgres v1.5.11
